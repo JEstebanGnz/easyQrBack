@@ -1,5 +1,6 @@
 package easyqr.unir.easyqr.Security;
 
+import easyqr.unir.easyqr.Exceptions.InvalidTokenException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -21,16 +22,14 @@ public class RequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        return true;
+        String tokenHeader = request.getHeader("token");
 
-//        String tokenHeader = request.getHeader("token");
-//
-//        if (tokenHeader!= null && tokenHeader.equals(token)){
-//            return true;
-//        }
-//
-//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized, check your token");
-//        return true;
+        if (tokenHeader!= null && tokenHeader.equals(token)){
+            return true;
+        }
+
+        throw new InvalidTokenException("Unauthorized, please check your token");
+
     }
 
 

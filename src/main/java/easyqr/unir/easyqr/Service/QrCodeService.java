@@ -2,7 +2,10 @@ package easyqr.unir.easyqr.Service;
 
 import java.util.List;
 
+import easyqr.unir.easyqr.Exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import easyqr.unir.easyqr.Entity.QrCode;
@@ -27,9 +30,19 @@ public class QrCodeService {
             qrCodeRepository.deleteById(id);
             return true;
         } catch (Exception e) {
-
             return false;
         }
+    }
+
+    public List<QrCode> getQrCodesByDescriptionOrUrl(String searchKeyword) throws ResourceNotFoundException {
+
+        var response = qrCodeRepository.findByDescriptionContainingIgnoreCaseOrUrlContainingIgnoreCase(searchKeyword, searchKeyword);
+
+        if (response.isEmpty()) {
+            throw new ResourceNotFoundException("There were no results for your query, try with other words");
+        }
+
+        return response;
     }
 
 }
