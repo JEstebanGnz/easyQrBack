@@ -5,17 +5,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
-
 @Configuration
 public class RequestInterceptorAppConfig implements WebMvcConfigurer {
 
     @Value("${token}")
     public String token;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RequestInterceptor(token)).excludePathPatterns("/v3/api-docs/**" ,"/swagger-ui/**");
-
+        registry.addInterceptor(new RequestInterceptor(token)).excludePathPatterns("/v3/api-docs/**" ,"/swagger-ui/*");
     }
 }

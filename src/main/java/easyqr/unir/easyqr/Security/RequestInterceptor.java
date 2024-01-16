@@ -11,26 +11,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 public class RequestInterceptor implements HandlerInterceptor {
-
     private final String token;
-
     public RequestInterceptor(String token) {
         this.token = token;
     }
-
     @Override
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String tokenHeader = request.getHeader("token");
-
         if (tokenHeader!= null && tokenHeader.equals(token)){
             return true;
         }
-
         throw new InvalidTokenException("Unauthorized, please check your token");
-
     }
-
-
 }

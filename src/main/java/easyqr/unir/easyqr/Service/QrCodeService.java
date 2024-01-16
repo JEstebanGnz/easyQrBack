@@ -1,6 +1,7 @@
 package easyqr.unir.easyqr.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import easyqr.unir.easyqr.Exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,8 @@ import easyqr.unir.easyqr.Repository.QrCodeRepository;
 
 @Service
 public class QrCodeService {
-    
-     @Autowired
+
+    @Autowired
     QrCodeRepository qrCodeRepository;
     public QrCode save(QrCode user) {
         return qrCodeRepository.save(user);

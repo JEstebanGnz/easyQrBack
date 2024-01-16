@@ -10,5 +10,4 @@ public class EasyqrApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EasyqrApplication.class, args);
 	}
-
 }

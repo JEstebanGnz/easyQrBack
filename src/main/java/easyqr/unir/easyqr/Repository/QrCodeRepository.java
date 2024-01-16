@@ -12,6 +12,6 @@ public interface QrCodeRepository  extends CrudRepository<QrCode,String>{
 
     public Optional<QrCode> findById(String id);
 
-
+    public Optional<QrCode> findByUrl(String url);
     public List<QrCode> findByDescriptionContainingIgnoreCaseOrUrlContainingIgnoreCase(String description, String url);
 }
