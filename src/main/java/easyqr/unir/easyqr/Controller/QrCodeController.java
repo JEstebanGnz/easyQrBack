@@ -3,8 +3,12 @@ package easyqr.unir.easyqr.Controller;
 import java.util.List;
 
 import easyqr.unir.easyqr.Exceptions.ResourceNotFoundException;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,30 +18,39 @@ import easyqr.unir.easyqr.Service.QrCodeService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/codes")
 @CrossOrigin("*")
 public class QrCodeController {
-     @Autowired
-    private QrCodeService qrCodeService;
+    private final QrCodeService qrCodeService;
+
+    @Autowired
+    public QrCodeController(QrCodeService qrCodeService) {
+        this.qrCodeService = qrCodeService;
+    }
+
     @GetMapping
-    public ResponseEntity<List<QrCode>> getAllUsers() {
+    @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
+    public ResponseEntity<List<QrCode>> getAllQrCodes() throws ResourceNotFoundException {
         List<QrCode> qrs = qrCodeService.findAll();
         return new ResponseEntity<>(qrs, HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<QrCode> getQrCodeById(@PathVariable String id) {
+    @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
+    public ResponseEntity<QrCode> getQrCodeById(@PathVariable String id) throws ResourceNotFoundException {
         QrCode qrCode = qrCodeService.getQrCodeById(id);
-        if (qrCode != null) {
-            return new ResponseEntity<>(qrCode, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(qrCode, HttpStatus.OK);
     }
+
     @PostMapping
+    @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
     public ResponseEntity<QrCode> createQrCode(@Valid @RequestBody QrCode qrCode) {
         QrCode createdQrCode = qrCodeService.save(qrCode);
         return new ResponseEntity<>(createdQrCode, HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
+    @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
     public ResponseEntity<QrCode> updateQrCode(@PathVariable String id, @RequestBody QrCode qrCode) {
         qrCode.setId(id);
         QrCode updateQrCode = qrCodeService.save(qrCode);
@@ -48,19 +61,18 @@ public class QrCodeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteQrCode(@PathVariable String id) {
-        boolean deleted = qrCodeService.deleteById(id);
-        if (deleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
+    public ResponseEntity<Void> deleteQrCode(@PathVariable String id) throws ResourceNotFoundException {
+        qrCodeService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<QrCode>> searchQRCodesByParameter(@RequestParam("query") String query) throws ResourceNotFoundException {
+    @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
+    public ResponseEntity<List<QrCode>> searchQRCodesByParameter(@RequestParam("query") String query)
+            throws ResourceNotFoundException {
         return new ResponseEntity<List<QrCode>>(qrCodeService.getQrCodesByDescriptionOrUrl(query), HttpStatus.OK);
     }
 
 
-    
 }
