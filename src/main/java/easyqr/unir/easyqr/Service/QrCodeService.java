@@ -22,7 +22,8 @@ public class QrCodeService {
     }
 
     public QrCode save(QrCode qrCode) throws InvalidParametersException {
-        this.validateParameters(qrCode);
+        boolean isUpdate = false;
+        this.validateParameters(qrCode, isUpdate);
         return qrCodeRepository.save(qrCode);
     }
 
@@ -64,8 +65,8 @@ public class QrCodeService {
 
     public QrCode update(QrCode qrCode) throws InvalidParametersException, ResourceNotFoundException {
         QrCode qrCodeToUpdate = this.getQrCodeById(qrCode.getId());
-
-        this.validateParameters(qrCode);
+        boolean isUpdate = true;
+        this.validateParameters(qrCode, isUpdate);
         return qrCodeRepository.save(qrCode);
     }
     public QrCode getQRByUrl(String url) {
@@ -76,7 +77,7 @@ public class QrCodeService {
         return qrCode.get();
     }
 
-    private void validateParameters(QrCode qrCode) throws InvalidParametersException {
+    private void validateParameters(QrCode qrCode, boolean isUpdate) throws InvalidParametersException {
         if (qrCode.getDescription() == null || qrCode.getDescription().isEmpty()) {
             throw new InvalidParametersException("description is mandatory");
         }
@@ -89,10 +90,13 @@ public class QrCodeService {
         }
         
         if (!UrlValidator.getInstance().isValid(qrCode.getUrl())) {
+            System.out.println(qrCode.getUrl());
             throw new InvalidParametersException("the url is not valid");
         }
-        if (this.getQRByUrl(qrCode.getUrl()) != null) {
-            throw new InvalidParametersException("the url exist in the data base");
+        if(!isUpdate){
+            if (this.getQRByUrl(qrCode.getUrl()) != null) {
+                throw new InvalidParametersException("the url exist in the data base");
+            }
         }
     }
 
