@@ -2,6 +2,7 @@ package easyqr.unir.easyqr.Controller;
 
 import java.util.List;
 
+import easyqr.unir.easyqr.Exceptions.InvalidParametersException;
 import easyqr.unir.easyqr.Exceptions.ResourceNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -44,16 +45,16 @@ public class QrCodeController {
 
     @PostMapping
     @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
-    public ResponseEntity<QrCode> createQrCode(@Valid @RequestBody QrCode qrCode) {
+    public ResponseEntity<QrCode> createQrCode(@RequestBody QrCode qrCode) throws InvalidParametersException {
         QrCode createdQrCode = qrCodeService.save(qrCode);
         return new ResponseEntity<>(createdQrCode, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
-    public ResponseEntity<QrCode> updateQrCode(@PathVariable String id, @RequestBody QrCode qrCode) {
+    public ResponseEntity<QrCode> updateQrCode(@PathVariable String id, @RequestBody QrCode qrCode) throws InvalidParametersException, ResourceNotFoundException {
         qrCode.setId(id);
-        QrCode updateQrCode = qrCodeService.save(qrCode);
+        QrCode updateQrCode = qrCodeService.update(qrCode);
         if (updateQrCode != null) {
             return new ResponseEntity<>(updateQrCode, HttpStatus.OK);
         }

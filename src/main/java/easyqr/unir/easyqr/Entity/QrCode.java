@@ -1,5 +1,8 @@
 package easyqr.unir.easyqr.Entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 
@@ -7,11 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Table(name = "qrcode")
 @Entity
@@ -26,7 +24,12 @@ public class QrCode {
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
+
+    @NotBlank
+    @Size(min =3, max=500)
     private String description;
+
+    @NotBlank
     private String url;
     
 }
