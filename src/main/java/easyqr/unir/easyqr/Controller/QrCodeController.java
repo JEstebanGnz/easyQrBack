@@ -64,7 +64,7 @@ public class QrCodeController {
     @Parameter(in = ParameterIn.HEADER, name = "token", schema = @Schema(type = "string", defaultValue = "d8bf714a8a0821d1e4ca9ee4c514f271"))
     public ResponseEntity<Void> deleteQrCode(@PathVariable String id) throws ResourceNotFoundException {
         qrCodeService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/search")
