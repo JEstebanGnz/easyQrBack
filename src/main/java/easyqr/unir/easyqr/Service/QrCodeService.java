@@ -68,6 +68,13 @@ public class QrCodeService {
         this.validateParameters(qrCode);
         return qrCodeRepository.save(qrCode);
     }
+    public QrCode getQRByUrl(String url) {
+        Optional<QrCode> qrCode = qrCodeRepository.findByUrl(url);
+        if (qrCode.isEmpty()) {
+            return null;
+        }
+        return qrCode.get();
+    }
 
     private void validateParameters(QrCode qrCode) throws InvalidParametersException {
         if (qrCode.getDescription() == null || qrCode.getDescription().isEmpty()) {
@@ -83,6 +90,9 @@ public class QrCodeService {
         
         if (!UrlValidator.getInstance().isValid(qrCode.getUrl())) {
             throw new InvalidParametersException("the url is not valid");
+        }
+        if (this.getQRByUrl(qrCode.getUrl()) != null) {
+            throw new InvalidParametersException("the url exist in the data base");
         }
     }
 
