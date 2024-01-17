@@ -25,15 +25,22 @@ public class QrCodeController {
         return new ResponseEntity<>(qrs, HttpStatus.OK);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<QrCode> getQrCodeById(@PathVariable String id) {
+    public ResponseEntity<?> getQrCodeById(@PathVariable String id) throws ResourceNotFoundException {
+        if (id == null || id.isEmpty()) {
+            return new ResponseEntity<>("El campo id es requerido", HttpStatus.BAD_REQUEST);
+        }
         QrCode qrCode = qrCodeService.getQrCodeById(id);
         if (qrCode != null) {
             return new ResponseEntity<>(qrCode, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    @PostMapping
-    public ResponseEntity<QrCode> createQrCode(@Valid @RequestBody QrCode qrCode) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createQrCode(@Valid @RequestBody QrCode qrCode) {
+
+        if (qrCode.getDescription() == null || qrCode.getDescription().isEmpty()) {
+            throw  new
+        }
         QrCode createdQrCode = qrCodeService.save(qrCode);
         return new ResponseEntity<>(createdQrCode, HttpStatus.CREATED);
     }

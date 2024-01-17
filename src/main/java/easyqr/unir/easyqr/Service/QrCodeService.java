@@ -1,6 +1,7 @@
 package easyqr.unir.easyqr.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import easyqr.unir.easyqr.Exceptions.ResourceNotFoundException;
@@ -17,14 +18,23 @@ public class QrCodeService {
 
     @Autowired
     QrCodeRepository qrCodeRepository;
-    public QrCode save(QrCode user) {
-        return qrCodeRepository.save(user);
+    public QrCode save(QrCode qr) {
+        return qrCodeRepository.save(qr);
     }
     public List<QrCode> findAll() {
         return (List<QrCode>) qrCodeRepository.findAll();
     }
-    public QrCode getQrCodeById(String id) {
-        return qrCodeRepository.findById(id).get();
+    public QrCode getQrCodeById(String id) throws ResourceNotFoundException {
+
+        Optional<QrCode> qrCodeOptional = qrCodeRepository.findById(id);
+
+        if (qrCodeOptional.isPresent()) {
+            return qrCodeOptional.get();
+        } else {
+
+            throw new ResourceNotFoundException("QrCode con ID " + id + " no encontrado");
+
+        }
     }
     public Boolean deleteById(String id) {
         try {
