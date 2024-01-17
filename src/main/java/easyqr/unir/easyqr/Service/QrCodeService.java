@@ -2,7 +2,11 @@ package easyqr.unir.easyqr.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import easyqr.unir.easyqr.Exceptions.InvalidParametersException;
 import easyqr.unir.easyqr.Exceptions.ResourceNotFoundException;
+import org.apache.commons.validator.routines.UrlValidator;
+import org.hibernate.validator.internal.constraintvalidators.hv.URLValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import easyqr.unir.easyqr.Entity.QrCode;
@@ -17,7 +21,8 @@ public class QrCodeService {
         this.qrCodeRepository = qrCodeRepository;
     }
 
-    public QrCode save(QrCode qrCode) {
+    public QrCode save(QrCode qrCode) throws InvalidParametersException {
+        this.validateParameters(qrCode);
         return qrCodeRepository.save(qrCode);
     }
 
@@ -55,6 +60,30 @@ public class QrCodeService {
         }
 
         return response;
+    }
+
+    public QrCode update(QrCode qrCode) throws InvalidParametersException, ResourceNotFoundException {
+        QrCode qrCodeToUpdate = this.getQrCodeById(qrCode.getId());
+
+        this.validateParameters(qrCode);
+        return qrCodeRepository.save(qrCode);
+    }
+
+    private void validateParameters(QrCode qrCode) throws InvalidParametersException {
+        if (qrCode.getDescription() == null || qrCode.getDescription().isEmpty()) {
+            throw new InvalidParametersException("description is mandatory");
+        }
+
+        if(qrCode.getDescription().length() < 3 || qrCode.getDescription().length()>500) {
+            throw new InvalidParametersException("the description size must be between 3 and 500 characters");
+        }
+        if (qrCode.getUrl()== null || qrCode.getUrl().isEmpty()) {
+            throw new InvalidParametersException("url is mandatory");
+        }
+        
+        if (!UrlValidator.getInstance().isValid(qrCode.getUrl())) {
+            throw new InvalidParametersException("the url is not valid");
+        }
     }
 
 }

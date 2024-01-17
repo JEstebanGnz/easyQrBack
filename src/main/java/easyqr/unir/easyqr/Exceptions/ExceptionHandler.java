@@ -25,5 +25,11 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(value = {InvalidParametersException.class})
+    public ResponseEntity<APIResponse> invalidParametersException(InvalidParametersException ex) {
+        APIResponse response = new APIResponse(true, ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
 
 }
